@@ -6,6 +6,7 @@ at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------*/
 
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using OneScript.Contexts;
 using OneScript.Exceptions;
 using OneScript.Values;
@@ -55,6 +56,11 @@ namespace OneScript.StandardLibrary.Collections
         public override int GetPropertyNumber(string name)
         {
         	return _structure.GetPropertyNumber(name);
+        }
+
+        public override int GetPropCount()
+        {
+            return _structure.GetPropCount();
         }
 
         public override BslMethodInfo GetMethodInfo(int methodNumber)

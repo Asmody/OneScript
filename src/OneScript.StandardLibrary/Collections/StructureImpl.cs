@@ -5,6 +5,7 @@ was not distributed with this file, You can obtain one
 at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------*/
 
+using System;
 using System.Collections.Generic;
 using OneScript.Commons;
 using OneScript.Contexts;
@@ -131,6 +132,17 @@ namespace OneScript.StandardLibrary.Collections
         public override string GetPropName(int propNum)
         {
             return GetPropertyName(propNum);
+        }
+
+        public override BslPropertyInfo GetPropertyInfo(int propNum)
+        {
+           return BslPropertyBuilder.Create()
+                .Name(GetPropName(propNum))
+                .CanRead(true)
+                .CanWrite(true)
+                .ReturnType(_values[propNum].GetType())
+                .DeclaringType(GetType())
+                .Build();
         }
 
         public override BslMethodInfo GetMethodInfo(int methodNumber)
