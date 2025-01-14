@@ -1250,12 +1250,20 @@ namespace ScriptEngine.Machine
             else
             {
                 var exceptionValue = _operationStack.Pop().GetRawValue();
-                if (exceptionValue is ExceptionInfoContext { IsErrorTemplate: true } excInfo)
+                if (exceptionValue is ExceptionInfoContext { IsErrorTemplate: true } excTemplateInfo)
+                {
+                    throw new ParametrizedRuntimeException(
+                        excTemplateInfo.Description,
+                        excTemplateInfo.Parameters,
+                        excTemplateInfo.InnerException
+                    );
+                }
+                else if (exceptionValue is ExceptionInfoContext { IsErrorTemplate: false } excInfo)
                 {
                     throw new ParametrizedRuntimeException(
                         excInfo.Description,
-                        excInfo.Parameters,
-                        excInfo.InnerException
+                        ValueFactory.Create(),
+                        excInfo
                     );
                 }
                 else
