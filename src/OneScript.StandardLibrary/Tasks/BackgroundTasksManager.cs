@@ -47,10 +47,13 @@ namespace OneScript.StandardLibrary.Tasks
             var task = new BackgroundTask(target, methodName, parameters);
             _tasks.Add(task);
 
+            var eventProcessor = MachineInstance.Current.EventProcessor;
+
             var taskCreationOptions = longRunning ? TaskCreationOptions.LongRunning : TaskCreationOptions.None;
             var worker = new Task(() =>
             {
                 MachineInstance.Current.SetMemory(_runtimeContext);
+                MachineInstance.Current.EventProcessor = eventProcessor;
                 var debugger = _runtimeContext.Services.TryResolve<IDebugController>();
                 debugger?.AttachToThread();
                 try

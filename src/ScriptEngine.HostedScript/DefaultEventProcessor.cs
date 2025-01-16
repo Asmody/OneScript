@@ -72,11 +72,15 @@ namespace ScriptEngine.HostedScript
             if (!_registeredHandlers.TryGetValue(eventSource, out var handlers))
             {
                 handlers = new Dictionary<string, HandlersList>();
-                handlers[eventName] = new HandlersList();
                 _registeredHandlers[eventSource] = handlers;
             }
             
-            handlers[eventName].Add(handlerScript, handlerMethod);
+            if (!handlers.TryGetValue(eventName, out var handlersList)) {
+                handlersList = new HandlersList();
+                handlers[eventName] = handlersList;
+            }
+            
+            handlersList.Add(handlerScript, handlerMethod);
         }
 
         public void RemoveHandler(
@@ -88,9 +92,13 @@ namespace ScriptEngine.HostedScript
             if (!(handlerTarget is ScriptDrivenObject handlerScript))
                 throw RuntimeException.InvalidArgumentType("handlerTarget");
             
-            if (_registeredHandlers.TryGetValue(eventSource, out var handlers))
+            if (!_registeredHandlers.TryGetValue(eventSource, out var handlers))
             {
-                handlers[eventName].Remove(handlerScript, handlerMethod);
+                return;
+            }
+            
+            if (handlers.TryGetValue(eventName, out var handlersList)) {
+                handlersList.Remove(handlerScript, handlerMethod);
             }
         }
 
@@ -99,7 +107,11 @@ namespace ScriptEngine.HostedScript
             if (!_registeredHandlers.TryGetValue(eventSource, out var handlers)) 
                 return;
             
-            foreach (var handler in handlers[eventName])
+            if (!handlers.TryGetValue(eventName, out var handlersList)) {
+                return;
+            }
+            
+            foreach (var handler in handlersList)
             {
                 handler.Method(eventArgs);
             }
