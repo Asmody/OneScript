@@ -157,7 +157,7 @@ namespace OneScript.StandardLibrary.Text
         /// Возвращает или задает кодировку консоли, используемую при чтении входных данных.
         /// </summary>
         /// <returns>КодировкаТекста</returns>
-        [ContextProperty("КодировкаВыходногоПотока", "InputEncoding")]
+        [ContextProperty("КодировкаВыходногоПотока", "OutputEncoding")]
         public IValue OutputEncoding 
         {
             get
