@@ -2451,6 +2451,7 @@ namespace ScriptEngine.Machine
 
         public IList<ExecutionFrameInfo> GetExecutionFrames()
         {
+            CreateFullCallstack();
             return _fullCallstackCache;
         }
 
