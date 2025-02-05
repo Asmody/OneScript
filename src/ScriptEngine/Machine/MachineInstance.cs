@@ -1227,8 +1227,12 @@ namespace ScriptEngine.Machine
 
         private void EndTry(int arg)
         {
-            if (_exceptionsStack.Count > 0 && _exceptionsStack.Peek().HandlerFrame == _currentFrame)
-                _exceptionsStack.Pop();
+            if (_exceptionsStack.Count > 0)
+            {
+                var jmpInfo = _exceptionsStack.Peek();
+                if (jmpInfo.HandlerFrame == _currentFrame && arg == jmpInfo.HandlerAddress)
+                    _exceptionsStack.Pop();
+            }
             _currentFrame.LastException = null;
             NextInstruction();
         }

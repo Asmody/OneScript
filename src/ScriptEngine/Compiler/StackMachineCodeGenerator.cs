@@ -885,7 +885,7 @@ namespace ScriptEngine.Compiler
             var endIndex = AddLineNumber(node.EndLocation.LineNumber,
                 CodeGenerationFlags.CodeStatistics | CodeGenerationFlags.DebugCode);
             
-            AddCommand(OperationCode.EndTry);
+            AddCommand(OperationCode.EndTry, beginHandler);
             CorrectCommandArgument(jmpIndex, endIndex);
         }
 
