@@ -5,7 +5,6 @@ was not distributed with this file, You can obtain one
 at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------*/
 
-using System;
 using System.Collections.Generic;
 using OneScript.Commons;
 using OneScript.Contexts;
@@ -29,11 +28,10 @@ namespace OneScript.StandardLibrary.Collections
 
         public StructureImpl(string strProperties, params IValue[] values)
         {
-            var props = strProperties.Split(',');
-
-            for (int i = 0, nprop = 0; i < props.Length; i++)
+            var nprop = 0;
+            foreach (var item in strProperties.Split(','))
             {
-                var prop = props[i].Trim();
+                var prop = item.Trim();    
                 if (prop.Equals(string.Empty))
                     continue;
 
@@ -49,7 +47,7 @@ namespace OneScript.StandardLibrary.Collections
                 Insert(keyValue.Key.AsString(), keyValue.Value);
             }
         }
-
+      
         [ContextMethod("Вставить")]
         public void Insert(string name, IValue val = null)
         {
@@ -66,7 +64,7 @@ namespace OneScript.StandardLibrary.Collections
             {
                 val = ValueFactory.Create();
             }
-
+            
             SetPropValue(num, val);
         }
 
@@ -255,20 +253,14 @@ namespace OneScript.StandardLibrary.Collections
         [ScriptConstructor(Name = "По ключам и значениям")]
         public static StructureImpl Constructor(IValue param1, IValue[] args)
         {
-            var rawArgument = param1?.GetRawValue();
-            if (rawArgument == null)
-                return new StructureImpl();
-            
-            if (rawArgument is BslStringValue s)
+            return param1?.GetRawValue() switch
             {
-                return new StructureImpl((string)s, args);
-            }
-            else if (rawArgument is FixedStructureImpl)
-            {
-                return new StructureImpl(rawArgument as FixedStructureImpl);
-            }
-
-            throw new RuntimeException("В качестве параметра для конструктора можно передавать только ФиксированнаяСтруктура или Ключи и Значения");
+                null => new StructureImpl(),
+                BslStringValue s => new StructureImpl((string)s, args),
+                FixedStructureImpl fixedstr => new StructureImpl(fixedstr),
+                 
+                _ => throw new RuntimeException("В качестве параметра для конструктора можно передавать только ФиксированнаяСтруктура или Ключи и Значения")
+            };
         }
 
 

@@ -6,7 +6,6 @@ at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------*/
 
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using OneScript.Contexts;
 using OneScript.Exceptions;
 using OneScript.Values;
@@ -169,21 +168,15 @@ namespace OneScript.StandardLibrary.Collections
         [ScriptConstructor(Name = "По ключам и значениям")]
         public static FixedStructureImpl Constructor(IValue param1, IValue[] args)
         {
-            var rawArgument = param1?.GetRawValue();
-            if (rawArgument == null)
-                return new FixedStructureImpl("");
-            
-            if (rawArgument is BslStringValue s)
+            return param1?.GetRawValue() switch
             {
-                return new FixedStructureImpl((string)s, args);
-            }
-            else if (rawArgument is StructureImpl)
-            {
-                return new FixedStructureImpl(rawArgument as StructureImpl);
-            }
+                null => new FixedStructureImpl(""),
+                BslStringValue s => new FixedStructureImpl((string)s, args),
+                StructureImpl structure => new FixedStructureImpl(structure),
+                 
+                _ => throw new RuntimeException("В качестве параметра для конструктора можно передавать только Структура или Ключи и Значения")
+            };
+        }
 
-            throw new RuntimeException("В качестве параметра для конструктора можно передавать только Структура или Ключи и Значения");
     }
-
-}
 }
