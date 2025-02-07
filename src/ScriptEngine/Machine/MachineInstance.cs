@@ -533,6 +533,10 @@ namespace ScriptEngine.Machine
                 (i)=>{NextInstruction();},
                 PushVar,
                 PushConst,
+                PushInt,
+                PushBool,
+                PushUndef,
+                PushNull,
                 PushLoc,
                 PushRef,
                 LoadVar,
@@ -669,6 +673,30 @@ namespace ScriptEngine.Machine
         private void PushConst(int arg)
         {
             _operationStack.Push(_module.Constants[arg]);
+            NextInstruction();
+        }
+        
+        private void PushBool(int arg)
+        {
+            _operationStack.Push(BslBooleanValue.Create(arg == 1));
+            NextInstruction();
+        }
+        
+        private void PushInt(int arg)
+        {
+            _operationStack.Push(BslNumericValue.Create(arg));
+            NextInstruction();
+        }
+        
+        private void PushUndef(int arg)
+        {
+            _operationStack.Push(BslUndefinedValue.Instance);
+            NextInstruction();
+        }
+        
+        private void PushNull(int arg)
+        {
+            _operationStack.Push(BslNullValue.Instance);
             NextInstruction();
         }
 
